@@ -1,5 +1,5 @@
 {
-  "name": "talc",
+  "name": "@evinism/talc",
   "version": "0.1.0",
   "description": "Insta-CLI for your projects!",
   "main": "index.js",

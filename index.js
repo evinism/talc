@@ -3,7 +3,7 @@ const fs = require("fs");
 const childProcess = require("child_process");
 const { exit, argv } = require("process");
 
-const topLevelNode = yaml.load(fs.readFileSync("./talc.yaml", "utf8"));
+let topLevelNode = yaml.load(fs.readFileSync("./talc.yaml", "utf8"));
 
 let args = process.argv;
 if (args[0].endsWith('/node')) {
@@ -12,12 +12,29 @@ if (args[0].endsWith('/node')) {
     args = args.slice(1);
 }
 
-let curNode = topLevelNode;
-
 function helpString(node) {
     return "Available commands are:\n" + Object.values(node.commands).map((value) => `  ${value.name}: ${value.doc}`).join('\n');
 }
 
+// Handle metacommands
+const talcMeta = {
+    name: 'meta',
+    doc: 'Commands having to do with talc itself',
+    commands: [
+        {
+            name: 'alias',
+            doc: 'Output an alias that you can add to your aliases file to register a command',
+            shell: `echo 'Add the following line to your aliases file:' && echo "alias $(pwd | xargs basename)=\\"cd $(pwd) && talc\\""`
+        }
+    ]
+}
+if (args[0] === 'meta') {
+    args = args.slice(1);
+    topLevelNode = talcMeta;
+}
+
+// Main search
+let curNode = topLevelNode;
 while (!curNode.shell) {
     const curCommand = args.shift();
     if (!curCommand) {
@@ -34,8 +51,8 @@ while (!curNode.shell) {
     curNode = next;
 }
 
+// Execution
 const child = childProcess.exec(curNode.shell + args.join(" "));
-
 child.stdout.on('data', (data) => {
     process.stdout.write(data);
 });
