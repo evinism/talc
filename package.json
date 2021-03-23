@@ -1,0 +1,29 @@
+{
+  "name": "talc",
+  "version": "0.1.0",
+  "description": "Insta-CLI for your projects!",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/evinism/talc.git"
+  },
+  "keywords": [
+    "talc",
+    "cli",
+    "command",
+    "line",
+    "interface"
+  ],
+  "author": "Evin Sellin",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/evinism/talc/issues"
+  },
+  "homepage": "https://github.com/evinism/talc#readme",
+  "dependencies": {
+    "js-yaml": "^4.0.0"
+  }
+}
