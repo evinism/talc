@@ -1,9 +1,18 @@
+#!/usr/bin/env node
+
 const yaml = require("js-yaml");
 const fs = require("fs");
 const childProcess = require("child_process");
-const { exit, argv } = require("process");
+const { exit } = require("process");
 
-let topLevelNode = yaml.load(fs.readFileSync("./talc.yaml", "utf8"));
+let topLevelNode;
+try {
+    topLevelNode = yaml.load(fs.readFileSync("./talc.yaml", "utf8"));
+} catch (e) {
+    console.error("talc: Could not open talc CLI spec talc.yaml");
+    console.error("Are you in a directory with a talc CLI?")
+    exit(1);
+}
 
 let args = process.argv;
 if (args[0].endsWith('/node')) {

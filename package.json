@@ -2,9 +2,15 @@
   "name": "@evinism/talc",
   "version": "0.1.0",
   "description": "Insta-CLI for your projects!",
-  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "@your_npm_username/talc": "bin/talc",
+    "talc": "bin/talc"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "repository": {
     "type": "git",
