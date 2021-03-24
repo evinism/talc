@@ -6,12 +6,10 @@ commands:
     commands:
       - name: now
         doc: Say something now
-        shell:
-          "echo Hi"
+        shell: "echo Hi"
   - name: say2
-    doc:
+    doc: supperoni
     commands:
-      - name: 
-        doc: 
-        shell:
-          "echo Hi"
+      - name: say
+        doc: hi
+        shell: "echo Hi"
