@@ -89,20 +89,9 @@ function talc(argv: string[]) {
   }
 
   // Execution
-  const child = childProcess.exec(curNode.shell + args.join(" "), {
+  childProcess.execSync(curNode.shell + args.join(" "), {
     cwd: workingDirectory,
-  });
-  if (child.stdout) {
-    child.stdout.on("data", (data) => {
-      process.stdout.write(data);
-    });
-  }
-
-  child.on("exit", (code) => {
-    if (code === null) {
-      code = 0;
-    }
-    exit(code);
+    stdio: "inherit",
   });
 }
 
