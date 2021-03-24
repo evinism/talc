@@ -1,6 +1,6 @@
 {
   "name": "@evinism/talc",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Insta-CLI for your projects!",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -8,7 +8,7 @@
     "build": "tsc"
   },
   "bin": {
-    "@your_npm_username/talc": "bin/talc",
+    "@evinism/talc": "bin/talc",
     "talc": "bin/talc"
   },
   "publishConfig": {
