@@ -1,7 +1,7 @@
 import yaml from "js-yaml";
 import fs from "fs";
 import childProcess from "child_process";
-import { exit } from "process";
+import { env, exit } from "process";
 import validate from "./validate";
 
 import { TalcNode, TalcCommandNode, TalcShellNode } from "./types";
@@ -20,9 +20,13 @@ function helpString(node: TalcCommandNode) {
 }
 
 function talc(argv: string[]) {
+  const workingDirectory = env["TALCDIR"] || process.cwd();
+
   let topLevelNode: any;
   try {
-    topLevelNode = yaml.load(fs.readFileSync("./talc.yaml", "utf8"));
+    topLevelNode = yaml.load(
+      fs.readFileSync(`${workingDirectory}/talc.yaml`, "utf8")
+    );
   } catch (e) {
     console.error(
       "talc: Could not open talc CLI spec talc.yaml\n" +
@@ -55,7 +59,7 @@ function talc(argv: string[]) {
         name: "alias",
         doc:
           "Output an alias that you can add to your aliases file to register a command",
-        shell: `echo 'Add the following line to your aliases file:' && echo "alias $(pwd | xargs basename)=\\"cd $(pwd) && talc\\""`,
+        shell: `echo 'Add the following line to your aliases file:' && echo "alias $(pwd | xargs basename)=\\"TALCDIR=$(pwd) talc\\""`,
       },
     ],
   };
@@ -85,7 +89,9 @@ function talc(argv: string[]) {
   }
 
   // Execution
-  const child = childProcess.exec(curNode.shell + args.join(" "));
+  const child = childProcess.exec(curNode.shell + args.join(" "), {
+    cwd: workingDirectory,
+  });
   if (child.stdout) {
     child.stdout.on("data", (data) => {
       process.stdout.write(data);

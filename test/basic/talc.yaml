@@ -7,9 +7,9 @@ commands:
       - name: now
         doc: Say something now
         shell: "echo Hi"
-  - name: say2
-    doc: supperoni
+  - name: gimme
+    doc: what to gimme
     commands:
-      - name: say
-        doc: hi
-        shell: "echo Hi"
+      - name: cwd
+        doc: the working directory
+        shell: "pwd"
