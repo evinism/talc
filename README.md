@@ -1,11 +1,9 @@
-# talc
-Insta-CLI for your projects! 
+# Talc: Insta-CLI for your projects! 
 
 Install via `npm install -g @evinism/talc`
 
-
-## Overview:
-Have you ever wanted your project to have it's own CLI? Now it can!
+## Overview
+Have you ever wanted your project to have it's own custom CLI? Now it can!
 
 ```
 > talc build ui
@@ -19,14 +17,13 @@ running docker-compose...success
 dev server running at localhost:8080
 ```
 
-Configuration via a `talc.yaml` file in the same directory
+Configuration is specified via a `talc.yaml` file located in the same directory where you run the `talc` command.
 
 Think `package.json` scripts but hierarchical and intended to be language independent.
 
-## Example:
+## Example
 Here's a sample `talc.yaml` file:
 
-`talc.yaml`:
 ```yaml
 doc: Project CLI!
 commands:
@@ -58,9 +55,13 @@ commands:
       "echo"
 ```
 
-## Aliasing!
-Let's say you don't like using the `talc` command, and want it instead to be `myproject build` to look and feel more professional, or that you want your CLI to be accessable from any working directory.
+## Aliases
+Talc allows you to easily create and use custom, CWD-independent, commands. For example, if you want to use `myproject foo bar` rather than `talc foo bar`, you can run `talc meta alias` to get the proper alias to put in your `.bashrc` or `.zshrc` file. The primary advantage is that you can use the `myproject` command from anywhere, regardless of your working directory!
 
-Running `talc meta alias` gives you the proper alias to put in your `.bashrc` to ensure that you can use the cli `myproject` from anywhere!
+```
+> talc meta alias
+Add the following line to your aliases file:
+alias myproject="TALCDIR=/Users/evinsellin/myproject talc"
+```
 
-If you want, you can use this tool to distribute company-wide CLIs and tooling everywhere in your company.
+One of the major advantages of this is the ability to create company-wide CLIs for easy internal tooling and documentation!
