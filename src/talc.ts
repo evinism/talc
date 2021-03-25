@@ -12,6 +12,37 @@ import {
   isShellNode,
 } from "./helpers";
 
+type NodeSearchResult = {
+  node: TalcNode;
+  rest: string[];
+};
+
+// This is the distillation of all things gross
+function findNode(baseNode: TalcNode, args: string[]): NodeSearchResult {
+  const rest = args.slice();
+
+  let node = baseNode;
+  while (!isLeafNode(node)) {
+    const curCommand = rest.shift();
+    if (!curCommand) {
+      return { node, rest };
+    }
+    const next = node.commands.find((cmd) => cmd.name === curCommand);
+    if (!next) {
+      // There's probably some reorg of this that makes this pretty but i'm not
+      // gonna spend much time trying to find it.
+      rest.unshift(curCommand);
+      return { node, rest };
+    }
+    node = next;
+  }
+
+  return {
+    node,
+    rest,
+  };
+}
+
 function talc(argv: string[], workingDirectory: string) {
   let args = argv;
 
@@ -67,28 +98,22 @@ function talc(argv: string[], workingDirectory: string) {
     topLevelNode.commands.push(...talcBuiltins);
   }
 
-  // Main search
-  let curNode: TalcNode = topLevelNode;
-  while (!isLeafNode(curNode)) {
-    const curCommand = args.shift();
-    if (!curCommand) {
-      console.log(helpString(curNode));
-      exit(0);
-    }
-
-    const next = curNode.commands.find((cmd) => cmd.name === curCommand);
-    if (!next) {
-      const errMsg = `talc: Invalid subcommand ${curCommand}\n${commandListString(
+  const { node: curNode, rest } = findNode(topLevelNode, args);
+  if (!isLeafNode(curNode)) {
+    if (rest.length) {
+      const errMsg = `talc: Invalid subcommand ${rest[0]}\n${commandListString(
         curNode
       )}`;
       console.error(errMsg);
       exit(1);
+    } else {
+      console.log(helpString(curNode));
+      exit(0);
     }
-    curNode = next;
   }
 
   if (isShellNode(curNode)) {
-    childProcess.execSync(curNode.shell + args.join(" "), {
+    childProcess.execSync(curNode.shell + rest.join(" "), {
       cwd: workingDirectory,
       stdio: "inherit",
     });
