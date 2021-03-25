@@ -3,6 +3,7 @@ import fs from "fs";
 import childProcess from "child_process";
 import { exit } from "process";
 import validate from "./validate";
+import { quote } from "shell-quote";
 
 import { TalcNode } from "./types";
 import {
@@ -118,7 +119,7 @@ function talc(argv: string[], workingDirectory: string) {
   }
 
   if (isShellNode(curNode)) {
-    childProcess.execSync(curNode.shell + rest.join(" "), {
+    childProcess.execSync(curNode.shell + " " + quote(rest), {
       cwd: workingDirectory,
       stdio: "inherit",
     });

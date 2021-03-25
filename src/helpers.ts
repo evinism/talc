@@ -24,7 +24,7 @@ export function isLeafNode(node: TalcNode): node is TalcLeafNode {
 
 export function helpString(node: TalcNode) {
   let helpString = `${chalk.blueBright(node.name)}: ${
-    node.doc || "[no description]"
+    node.doc || chalk.dim("[no description]")
   }\n`;
   if (isShellNode(node)) {
     helpString += shellHelpString(node);
@@ -37,16 +37,18 @@ export function helpString(node: TalcNode) {
 }
 
 export function shellHelpString(node: TalcShellNode) {
-  return `Aliased as:\n${node.shell}`;
+  return `Aliased as:\n${chalk.greenBright(node.shell)}`;
 }
 
 export function internalJSHelpString(node: TalcInternalJSFunctionNode) {
-  return `[builtin function ${node.name}]`;
+  return `[builtin function ${chalk.greenBright(node.name)}]`;
 }
 
 export function commandListString(node: TalcBranchNode) {
   const toLine = (value: TalcNode) => {
-    let retval = ` * ${chalk.blueBright(value.name)}: ${value.doc}`;
+    let retval = ` * ${chalk.blueBright(value.name)}: ${
+      value.doc || chalk.dim("[no description]")
+    }`;
     if (value.builtin) {
       retval += " [builtin]";
       retval = chalk.dim(retval);
