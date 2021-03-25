@@ -32,6 +32,7 @@
   },
   "homepage": "https://github.com/evinism/talc#readme",
   "dependencies": {
+    "chalk": "^4.1.0",
     "js-yaml": "^4.0.0"
   },
   "devDependencies": {

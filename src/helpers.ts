@@ -6,6 +6,8 @@ import {
   TalcBranchNode,
 } from "./types";
 
+import chalk from "chalk";
+
 export function isInternalJSFunctionNode(
   node: TalcNode
 ): node is TalcInternalJSFunctionNode {
@@ -21,7 +23,9 @@ export function isLeafNode(node: TalcNode): node is TalcLeafNode {
 }
 
 export function helpString(node: TalcNode) {
-  let helpString = `${node.name}: ${node.doc || "[no description]"}\n`;
+  let helpString = `${chalk.blueBright(node.name)}: ${
+    node.doc || "[no description]"
+  }\n`;
   if (isShellNode(node)) {
     helpString += shellHelpString(node);
   } else if (isInternalJSFunctionNode(node)) {
@@ -42,9 +46,10 @@ export function internalJSHelpString(node: TalcInternalJSFunctionNode) {
 
 export function commandListString(node: TalcBranchNode) {
   const toLine = (value: TalcNode) => {
-    let retval = ` * ${value.name}: ${value.doc}`;
+    let retval = ` * ${chalk.blueBright(value.name)}: ${value.doc}`;
     if (value.builtin) {
       retval += " [builtin]";
+      retval = chalk.dim(retval);
     }
     return retval;
   };

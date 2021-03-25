@@ -11,6 +11,7 @@ import {
   commandListString,
   isShellNode,
 } from "./helpers";
+import chalk from "chalk";
 
 type NodeSearchResult = {
   node: TalcNode;
@@ -53,8 +54,10 @@ function talc(argv: string[], workingDirectory: string) {
     );
   } catch (e) {
     console.error(
-      "talc: Could not open talc CLI spec talc.yaml\n" +
-        "Are you in a directory with a talc CLI?"
+      chalk.red(
+        "talc: Could not open talc CLI configuration file talc.yaml\n" +
+          "Are you in a directory with a talc CLI?"
+      )
     );
     exit(1);
   }
@@ -76,6 +79,13 @@ function talc(argv: string[], workingDirectory: string) {
   // Handle metacommands
   const talcBuiltins: TalcNode[] = [
     {
+      name: "help",
+      doc: "Output help information about various commands",
+      builtin: true,
+      jsFunction: () =>
+        console.log(helpString(findNode(topLevelNode, args.slice(1)).node)),
+    },
+    {
       name: "meta",
       doc: "Commands having to do with talc itself",
       builtin: true,
@@ -88,13 +98,6 @@ function talc(argv: string[], workingDirectory: string) {
         },
       ],
     },
-    {
-      name: "help",
-      doc: "Output help information about various commands",
-      builtin: true,
-      jsFunction: () =>
-        console.log(helpString(findNode(topLevelNode, args.slice(1)).node)),
-    },
   ];
 
   if (!isLeafNode(topLevelNode)) {
@@ -104,10 +107,9 @@ function talc(argv: string[], workingDirectory: string) {
   const { node: curNode, rest } = findNode(topLevelNode, args);
   if (!isLeafNode(curNode)) {
     if (rest.length) {
-      const errMsg = `talc: Invalid subcommand ${rest[0]}\n${commandListString(
-        curNode
-      )}`;
+      const errMsg = chalk.red(`talc: Invalid subcommand ${rest[0]}`);
       console.error(errMsg);
+      console.log(commandListString(curNode));
       exit(1);
     } else {
       console.log(helpString(curNode));
