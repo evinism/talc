@@ -5,7 +5,12 @@ import { exit } from "process";
 import validate from "./validate";
 
 import { TalcNode } from "./types";
-import { isLeafNode, helpString, commandListString } from "./helpers";
+import {
+  isLeafNode,
+  helpString,
+  commandListString,
+  isShellNode,
+} from "./helpers";
 
 function talc(argv: string[], workingDirectory: string) {
   let args = argv;
@@ -51,6 +56,11 @@ function talc(argv: string[], workingDirectory: string) {
         },
       ],
     },
+    {
+      name: "help",
+      doc: "Output help information about various commands [builtin]",
+      jsFunction: () => console.log("[ nothing yet ]"),
+    },
   ];
 
   if (!isLeafNode(topLevelNode)) {
@@ -77,11 +87,14 @@ function talc(argv: string[], workingDirectory: string) {
     curNode = next;
   }
 
-  // Execution
-  childProcess.execSync(curNode.shell + args.join(" "), {
-    cwd: workingDirectory,
-    stdio: "inherit",
-  });
+  if (isShellNode(curNode)) {
+    childProcess.execSync(curNode.shell + args.join(" "), {
+      cwd: workingDirectory,
+      stdio: "inherit",
+    });
+  } else {
+    curNode.jsFunction();
+  }
 }
 
 export default talc;
