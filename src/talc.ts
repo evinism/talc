@@ -17,31 +17,37 @@ import chalk from "chalk";
 type NodeSearchResult = {
   node: TalcNode;
   rest: string[];
+  path: string[];
 };
 
 // This is the distillation of all things gross
-function findNode(baseNode: TalcNode, args: string[]): NodeSearchResult {
-  const rest = args.slice();
+function findNode(baseNode: TalcNode, inArgs: string[]): NodeSearchResult {
+  const args = inArgs.slice();
 
   let node = baseNode;
+  let idx = 0;
+
   while (!isLeafNode(node)) {
-    const curCommand = rest.shift();
+    const curCommand = args[idx];
+    idx++;
+
     if (!curCommand) {
-      return { node, rest };
+      break;
     }
     const next = node.commands.find((cmd) => cmd.name === curCommand);
     if (!next) {
       // There's probably some reorg of this that makes this pretty but i'm not
       // gonna spend much time trying to find it.
-      rest.unshift(curCommand);
-      return { node, rest };
+      idx--;
+      break;
     }
     node = next;
   }
 
   return {
     node,
-    rest,
+    path: args.slice(0, idx),
+    rest: args.slice(idx),
   };
 }
 
@@ -77,14 +83,19 @@ function talc(argv: string[], workingDirectory: string) {
     args = args.slice(1);
   }
 
+  // This is the worst thing ever
+  const tackOnFirst = (path: string[]) => [topLevelNode["name"]].concat(path);
+
   // Handle metacommands
   const talcBuiltins: TalcNode[] = [
     {
       name: "help",
       doc: "Output help information about various commands",
       builtin: true,
-      jsFunction: () =>
-        console.log(helpString(findNode(topLevelNode, args.slice(1)).node)),
+      jsFunction: function help() {
+        const { node, path } = findNode(topLevelNode, args.slice(1));
+        console.log(helpString(node, tackOnFirst(path)));
+      },
     },
     {
       name: "meta",
@@ -105,15 +116,17 @@ function talc(argv: string[], workingDirectory: string) {
     topLevelNode.commands.push(...talcBuiltins);
   }
 
-  const { node: curNode, rest } = findNode(topLevelNode, args);
+  const { node: curNode, rest, path } = findNode(topLevelNode, args);
   if (!isLeafNode(curNode)) {
     if (rest.length) {
-      const errMsg = chalk.red(`talc: Invalid subcommand ${rest[0]}`);
+      const errMsg = chalk.red(
+        `${tackOnFirst(path).join(" ")}: Invalid subcommand ${rest[0]}`
+      );
       console.error(errMsg);
       console.log(commandListString(curNode));
       exit(1);
     } else {
-      console.log(helpString(curNode));
+      console.log(helpString(curNode, tackOnFirst(path)));
       exit(0);
     }
   }

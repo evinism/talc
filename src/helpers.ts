@@ -22,8 +22,8 @@ export function isLeafNode(node: TalcNode): node is TalcLeafNode {
   return isShellNode(node) || isInternalJSFunctionNode(node);
 }
 
-export function helpString(node: TalcNode) {
-  let helpString = `${chalk.blueBright(node.name)}: ${
+export function helpString(node: TalcNode, path: string[]) {
+  let helpString = `${chalk.blueBright(path.join(" "))}: ${
     node.doc || chalk.dim("[no description]")
   }\n`;
   if (isShellNode(node)) {
