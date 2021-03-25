@@ -90,7 +90,8 @@ function talc(argv: string[], workingDirectory: string) {
     {
       name: "help",
       doc: "Output help information about various commands [builtin]",
-      jsFunction: () => console.log("[ nothing yet ]"),
+      jsFunction: () =>
+        console.log(helpString(findNode(topLevelNode, args.slice(1)).node)),
     },
   ];
 
