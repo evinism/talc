@@ -1,5 +1,4 @@
-name: vcli
-doc: Vidora CLI!
+doc: Basic CLI!
 commands:
   - name: say
     doc: Say something at a certain time

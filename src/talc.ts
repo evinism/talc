@@ -1,7 +1,7 @@
 import yaml from "js-yaml";
 import fs from "fs";
 import childProcess from "child_process";
-import { env, exit } from "process";
+import { exit } from "process";
 import validate from "./validate";
 
 import { TalcNode, TalcCommandNode, TalcShellNode } from "./types";
@@ -10,11 +10,25 @@ function isShellNode(node: TalcNode): node is TalcShellNode {
   return typeof (node as any).shell === "string";
 }
 
-function helpString(node: TalcCommandNode) {
+function helpString(node: TalcNode) {
+  let helpString = `${node.name}: ${node.doc || "[no description]"}\n`;
+  if (isShellNode(node)) {
+    helpString += shellHelpString(node);
+  } else {
+    helpString += commandListString(node);
+  }
+  return helpString;
+}
+
+function shellHelpString(node: TalcShellNode) {
+  return `Aliased as:\n${node.shell}`;
+}
+
+function commandListString(node: TalcCommandNode) {
   return (
-    "Available commands are:\n" +
+    "\nAvailable commands are:\n" +
     Object.values(node.commands)
-      .map((value) => `  ${value.name}: ${value.doc}`)
+      .map((value) => ` * ${value.name}: ${value.doc}`)
       .join("\n")
   );
 }
@@ -49,21 +63,23 @@ function talc(argv: string[], workingDirectory: string) {
   }
 
   // Handle metacommands
-  const talcMeta: TalcNode = {
-    name: "meta",
-    doc: "Commands having to do with talc itself",
-    commands: [
-      {
-        name: "alias",
-        doc:
-          "Output an alias that you can add to your aliases file to register a command",
-        shell: `echo 'Add the following line to your aliases file:' && echo "alias $(pwd | xargs basename)=\\"TALCDIR=$(pwd) talc\\""`,
-      },
-    ],
-  };
-  if (args[0] === "meta") {
-    args = args.slice(1);
-    topLevelNode = talcMeta;
+  const talcBuiltins: TalcNode[] = [
+    {
+      name: "meta",
+      doc: "Commands having to do with talc itself [builtin]",
+      commands: [
+        {
+          name: "alias",
+          doc:
+            "Output an alias that you can add to your aliases file to register a command",
+          shell: `echo 'Add the following line to your aliases file:' && echo "alias $(pwd | xargs basename)=\\"TALCDIR=$(pwd) talc\\""`,
+        },
+      ],
+    },
+  ];
+
+  if (!isShellNode(topLevelNode)) {
+    topLevelNode.commands.push(...talcBuiltins);
   }
 
   // Main search
@@ -77,7 +93,7 @@ function talc(argv: string[], workingDirectory: string) {
 
     const next = curNode.commands.find((cmd) => cmd.name === curCommand);
     if (!next) {
-      const errMsg = `talc: Invalid subcommand ${curCommand}\n${helpString(
+      const errMsg = `talc: Invalid subcommand ${curCommand}\n${commandListString(
         curNode
       )}`;
       console.error(errMsg);
