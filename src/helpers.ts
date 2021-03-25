@@ -41,10 +41,15 @@ export function internalJSHelpString(node: TalcInternalJSFunctionNode) {
 }
 
 export function commandListString(node: TalcBranchNode) {
+  const toLine = (value: TalcNode) => {
+    let retval = ` * ${value.name}: ${value.doc}`;
+    if (value.builtin) {
+      retval += " [builtin]";
+    }
+    return retval;
+  };
   return (
     "\nAvailable commands are:\n" +
-    Object.values(node.commands)
-      .map((value) => ` * ${value.name}: ${value.doc}`)
-      .join("\n")
+    Object.values(node.commands).map(toLine).join("\n")
   );
 }

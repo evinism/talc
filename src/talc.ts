@@ -77,7 +77,8 @@ function talc(argv: string[], workingDirectory: string) {
   const talcBuiltins: TalcNode[] = [
     {
       name: "meta",
-      doc: "Commands having to do with talc itself [builtin]",
+      doc: "Commands having to do with talc itself",
+      builtin: true,
       commands: [
         {
           name: "alias",
@@ -89,7 +90,8 @@ function talc(argv: string[], workingDirectory: string) {
     },
     {
       name: "help",
-      doc: "Output help information about various commands [builtin]",
+      doc: "Output help information about various commands",
+      builtin: true,
       jsFunction: () =>
         console.log(helpString(findNode(topLevelNode, args.slice(1)).node)),
     },
