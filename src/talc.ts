@@ -19,9 +19,7 @@ function helpString(node: TalcCommandNode) {
   );
 }
 
-function talc(argv: string[]) {
-  const workingDirectory = env["TALCDIR"] || process.cwd();
-
+function talc(argv: string[], workingDirectory: string) {
   let topLevelNode: any;
   try {
     topLevelNode = yaml.load(
