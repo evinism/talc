@@ -4,36 +4,12 @@ import childProcess from "child_process";
 import { exit } from "process";
 import validate from "./validate";
 
-import { TalcNode, TalcCommandNode, TalcShellNode } from "./types";
-
-function isShellNode(node: TalcNode): node is TalcShellNode {
-  return typeof (node as any).shell === "string";
-}
-
-function helpString(node: TalcNode) {
-  let helpString = `${node.name}: ${node.doc || "[no description]"}\n`;
-  if (isShellNode(node)) {
-    helpString += shellHelpString(node);
-  } else {
-    helpString += commandListString(node);
-  }
-  return helpString;
-}
-
-function shellHelpString(node: TalcShellNode) {
-  return `Aliased as:\n${node.shell}`;
-}
-
-function commandListString(node: TalcCommandNode) {
-  return (
-    "\nAvailable commands are:\n" +
-    Object.values(node.commands)
-      .map((value) => ` * ${value.name}: ${value.doc}`)
-      .join("\n")
-  );
-}
+import { TalcNode } from "./types";
+import { isLeafNode, helpString, commandListString } from "./helpers";
 
 function talc(argv: string[], workingDirectory: string) {
+  let args = argv;
+
   let topLevelNode: any;
   try {
     topLevelNode = yaml.load(
@@ -55,7 +31,6 @@ function talc(argv: string[], workingDirectory: string) {
     exit(1);
   }
 
-  let args = argv;
   if (args[0].endsWith("/node")) {
     args = args.slice(2);
   } else {
@@ -78,13 +53,13 @@ function talc(argv: string[], workingDirectory: string) {
     },
   ];
 
-  if (!isShellNode(topLevelNode)) {
+  if (!isLeafNode(topLevelNode)) {
     topLevelNode.commands.push(...talcBuiltins);
   }
 
   // Main search
   let curNode: TalcNode = topLevelNode;
-  while (!isShellNode(curNode)) {
+  while (!isLeafNode(curNode)) {
     const curCommand = args.shift();
     if (!curCommand) {
       console.log(helpString(curNode));

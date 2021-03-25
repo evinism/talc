@@ -1,13 +1,13 @@
-export type TalcShellNode = {
+export type TalcLeafNode = {
   name: string;
   doc: string;
   shell: string;
 };
 
-export type TalcCommandNode = {
+export type TalcBranchNode = {
   name: string;
   doc: string;
   commands: TalcNode[];
 };
 
-export type TalcNode = TalcShellNode | TalcCommandNode;
+export type TalcNode = TalcLeafNode | TalcBranchNode;
