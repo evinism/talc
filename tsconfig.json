@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
-    "outDir": "./lib",
+    "outDir": "./dist",
     "rootDir": "./src",
     "esModuleInterop": true,
-    "module": "commonjs",
+    "module": "nodenext",
     "strict": true,
     "allowSyntheticDefaultImports": true
   },

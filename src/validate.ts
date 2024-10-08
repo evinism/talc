@@ -1,4 +1,4 @@
-import { TalcNode } from "./types";
+import { TalcNode } from "./types.js";
 
 const boilerplate = "talc: Error in parsing talc config\n";
 

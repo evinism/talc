@@ -2,16 +2,16 @@ import yaml from "js-yaml";
 import fs from "fs";
 import childProcess from "child_process";
 import { exit } from "process";
-import validate from "./validate";
+import validate from "./validate.js";
 import { quote } from "shell-quote";
 
-import { TalcNode } from "./types";
+import { TalcNode } from "./types.js";
 import {
   isLeafNode,
   helpString,
   commandListString,
   isShellNode,
-} from "./helpers";
+} from "./helpers.js";
 import chalk from "chalk";
 
 type NodeSearchResult = {

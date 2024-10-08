@@ -4,7 +4,7 @@ import {
   TalcInternalJSFunctionNode,
   TalcLeafNode,
   TalcBranchNode,
-} from "./types";
+} from "./types.js";
 
 import chalk from "chalk";
 

@@ -1,15 +1,17 @@
 {
   "name": "@evinism/talc",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Insta-CLI for your projects!",
   "scripts": {
     "test": "jest",
     "prepack": "npm run-script build",
     "build": "tsc"
   },
+  "type": "module",
+  "module": "bundler",
   "bin": {
-    "@evinism/talc": "bin/talc",
-    "talc": "bin/talc"
+    "@evinism/talc": "bin/main.js",
+    "talc": "bin/main.js"
   },
   "publishConfig": {
     "access": "public"
@@ -32,18 +34,16 @@
   },
   "homepage": "https://github.com/evinism/talc#readme",
   "dependencies": {
-    "chalk": "^4.1.0",
-    "js-yaml": "^4.0.0",
-    "shell-quote": "^1.7.2"
+    "chalk": "^5.3.0",
+    "js-yaml": "^4.1.0",
+    "shell-quote": "^1.8.1"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.13.12",
-    "@babel/preset-typescript": "^7.13.0",
-    "@types/jest": "^26.0.21",
-    "@types/js-yaml": "^4.0.0",
-    "@types/node": "^14.14.35",
-    "@types/shell-quote": "^1.7.0",
-    "jest": "^26.6.3",
-    "typescript": "^4.2.3"
+    "@types/jest": "^29.5.13",
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^22.7.5",
+    "@types/shell-quote": "^1.7.5",
+    "jest": "^29.7.0",
+    "typescript": "^5.6.2"
   }
 }
