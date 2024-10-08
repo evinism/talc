@@ -1,6 +1,6 @@
 {
   "name": "@evinism/talc",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Insta-CLI for your projects!",
   "scripts": {
     "test": "jest",
@@ -8,10 +8,14 @@
     "build": "tsc"
   },
   "type": "module",
-  "module": "bundler",
+  "main": "bin/talc.js",
+  "files": [
+    "bin",
+    "dist"
+  ],
   "bin": {
-    "@evinism/talc": "bin/main.js",
-    "talc": "bin/main.js"
+    "@evinism/talc": "bin/talc.js",
+    "talc": "bin/talc.js"
   },
   "publishConfig": {
     "access": "public"
